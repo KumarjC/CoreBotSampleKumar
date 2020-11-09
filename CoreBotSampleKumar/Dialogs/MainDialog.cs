@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 
 
 using CoreBotSampleKumar.CognitiveModels;
+using Microsoft.BotBuilderSamples;
 
 namespace CoreBotSampleKumar.Dialogs
 {
@@ -26,27 +27,52 @@ namespace CoreBotSampleKumar.Dialogs
     {
         private readonly FlightBookingRecognizer _luisRecognizer;
         protected readonly ILogger Logger;
+        private readonly UserState _userState;
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, ILogger<MainDialog> logger)
+        public MainDialog(UserState userState,FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, ILogger<MainDialog> logger)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
             Logger = logger;
+            _userState = userState;
 
+            AddDialog(new TopLevelDialog());
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(bookingDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
+                FirstStepAsync,
                 IntroStepAsync,
                 ActStepAsync,
                 FinalStepAsync,
+                EndStepAsync,
+
             }));
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
         }
 
+        private async Task<DialogTurnResult> EndStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            var userInfo = (UserProfile)stepContext.Result;
+
+            string status = "You are signed up to review "
+                + (userInfo.CompaniesToReview.Count is 0 ? "no companies" : string.Join(" and ", userInfo.CompaniesToReview))
+                + ".";
+
+            await stepContext.Context.SendActivityAsync(status);
+
+            var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
+            await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);
+
+            return await stepContext.EndDialogAsync(null, cancellationToken);
+        }
+        private async Task<DialogTurnResult> FirstStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            return await stepContext.BeginDialogAsync(nameof(TopLevelDialog), null, cancellationToken);
+        }
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             //if (!_luisRecognizer.IsConfigured)
