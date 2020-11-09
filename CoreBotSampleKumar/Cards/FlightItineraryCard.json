@@ -1,0 +1,127 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.0",
+    "type": "AdaptiveCard",
+    "speak": "Your flight is confirmed for you and 1 other passengers from Kolkata to Chennai on Friday, December 25 8:30 AM",
+    "body": [
+        {
+            "type": "TextBlock",
+            "text": "Passengers",
+            "weight": "bolder",
+            "isSubtle": false
+        },
+        {
+            "type": "TextBlock",
+            "text": "Kumar",
+            "separator": true
+        },
+        {
+            "type": "TextBlock",
+            "text": "Umesh",
+            "spacing": "none"
+        },
+                {
+            "type": "TextBlock",
+            "text": "1 Stops",
+            "weight": "bolder",
+            "spacing": "medium"
+        },
+        {
+            "type": "TextBlock",
+            "text": "Fri, December 25 8:30 AM",
+            "weight": "bolder",
+            "spacing": "none"
+        },
+        {
+            "type": "ColumnSet",
+            "separator": true,
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": 1,
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Kolkata",
+                            "isSubtle": true
+                        },
+                        {
+                            "type": "TextBlock",
+                            "size": "extraLarge",
+                            "color": "accent",
+                            "text": "KOL",
+                            "spacing": "none"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": " "
+                        },
+                        {
+                            "type": "Image",
+                            "url": "https://adaptivecards.io/content/airplane.png",
+                            "size": "small",
+                            "spacing": "none"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": 1,
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "horizontalAlignment": "right",
+                            "text": "Chennai",
+                            "isSubtle": true
+                        },
+                        {
+                            "type": "TextBlock",
+                            "horizontalAlignment": "right",
+                            "size": "extraLarge",
+                            "color": "accent",
+                            "text": "CHN",
+                            "spacing": "none"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "spacing": "medium",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "1",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Total",
+                            "size": "medium",
+                            "isSubtle": true
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": 1,
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "horizontalAlignment": "right",
+                            "text": "$200.00",
+                            "size": "medium",
+                            "weight": "bolder"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
