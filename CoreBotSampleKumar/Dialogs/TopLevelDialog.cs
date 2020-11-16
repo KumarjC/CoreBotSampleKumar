@@ -87,9 +87,9 @@ namespace Microsoft.BotBuilderSamples
             userProfile.CompaniesToReview = stepContext.Result as List<string> ?? new List<string>();
 
             // Thank them for participating.
-            await stepContext.Context.SendActivityAsync(
-                MessageFactory.Text($"Thanks for using our Services, {((UserProfile)stepContext.Values[UserInfo]).Name}."),
-                cancellationToken);
+            //await stepContext.Context.SendActivityAsync(
+            //    MessageFactory.Text($"Thanks for using our Services, {((UserProfile)stepContext.Values[UserInfo]).Name}."),
+            //    cancellationToken);
 
             // Exit the dialog, returning the collected user information.
             return await stepContext.EndDialogAsync(stepContext.Values[UserInfo], cancellationToken);

@@ -47,7 +47,7 @@ namespace CoreBotSampleKumar.Dialogs
                 IntroStepAsync,
                 ActStepAsync,
                 FinalStepAsync,
-                EndStepAsync,
+               // EndStepAsync,
 
             }));
 
@@ -55,21 +55,21 @@ namespace CoreBotSampleKumar.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-        private async Task<DialogTurnResult> EndStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            var userInfo = (UserProfile)stepContext.Result;
+        //private async Task<DialogTurnResult> EndStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        //{
+        //    var userInfo = (UserProfile)stepContext.Result;
 
-            string status = "You are signed up to review "
-                + (userInfo.CompaniesToReview.Count is 0 ? "no companies" : string.Join(" and ", userInfo.CompaniesToReview))
-                + ".";
+        //    string status = "You are signed up to review "
+        //        + (userInfo.CompaniesToReview.Count is 0 ? "no companies" : string.Join(" and ", userInfo.CompaniesToReview))
+        //        + ".";
 
-            await stepContext.Context.SendActivityAsync(status);
+        //    await stepContext.Context.SendActivityAsync(status);
 
-            var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
-            await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);
+        //    var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
+        //    await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);
 
-            return await stepContext.EndDialogAsync(null, cancellationToken);
-        }
+        //    return await stepContext.EndDialogAsync(null, cancellationToken);
+        //}
         private async Task<DialogTurnResult> FirstStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             return await stepContext.BeginDialogAsync(nameof(TopLevelDialog), null, cancellationToken);
@@ -127,7 +127,8 @@ namespace CoreBotSampleKumar.Dialogs
             // Restart the main dialog with a different message the second time around
          
             var promptMessage = "What else can I do for you?";
-            return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
+            //return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
+            return await stepContext.EndDialogAsync (promptMessage, cancellationToken);
         }
 
         private Attachment CreateAdaptiveCardAttachment(string cardName)

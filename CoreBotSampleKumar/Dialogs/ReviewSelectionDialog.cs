@@ -79,7 +79,7 @@ namespace Microsoft.BotBuilderSamples
 
             if(list.Count > 0 && list[0]== "Create a New Booking") 
             {
-                return await stepContext.BeginDialogAsync(nameof(BookingDialog), null, cancellationToken); 
+                return await stepContext.EndDialogAsync(list, cancellationToken);
             }
             else 
             { 
