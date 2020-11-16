@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CoreBotSampleKumar.Dialogs;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
@@ -14,11 +15,11 @@ namespace Microsoft.BotBuilderSamples
     public class ReviewSelectionDialog : ComponentDialog
     {
         // Define a "done" response for the company selection prompt.
-        private const string DoneOption = "done";
+        private const string DoneOption = "Done";
 
         // Define value names for values tracked inside the dialogs.
         private const string CompaniesSelected = "value-companiesSelected";
-
+        
         // Define the company choices for the company selection prompt.
         private readonly string[] _companyOptions = new string[]
         {
@@ -75,7 +76,16 @@ namespace Microsoft.BotBuilderSamples
             };
 
             // Prompt the user for a choice.
-            return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
+
+            if(list.Count > 0 && list[0]== "Create a New Booking") 
+            {
+                return await stepContext.BeginDialogAsync(nameof(BookingDialog), null, cancellationToken); 
+            }
+            else 
+            { 
+                return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
+            }
+
         }
 
         private async Task<DialogTurnResult> LoopStepAsync(

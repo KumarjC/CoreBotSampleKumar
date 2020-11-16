@@ -12,7 +12,7 @@ namespace Microsoft.BotBuilderSamples
     public class TopLevelDialog : ComponentDialog
     {
         // Define a "done" response for the company selection prompt.
-        private const string DoneOption = "done";
+        private const string DoneOption = "Done";
 
         // Define value names for values tracked inside the dialogs.
         private const string UserInfo = "value-userInfo";
@@ -65,11 +65,11 @@ namespace Microsoft.BotBuilderSamples
             var userProfile = (UserProfile)stepContext.Values[UserInfo];
             userProfile.Age = (int)stepContext.Result;
 
-            if (userProfile.Age < 25)
+            if (userProfile.Age < 18)
             {
                 // If they are too young, skip the review selection dialog, and pass an empty list to the next step.
                 await stepContext.Context.SendActivityAsync(
-                    MessageFactory.Text("You must be 25 or older to participate."),
+                    MessageFactory.Text("You must be holding Passport or any equivalent National Identity to Book Tickets if you are below 18."),
                     cancellationToken);
                 return await stepContext.NextAsync(new List<string>(), cancellationToken);
             }
@@ -88,7 +88,7 @@ namespace Microsoft.BotBuilderSamples
 
             // Thank them for participating.
             await stepContext.Context.SendActivityAsync(
-                MessageFactory.Text($"Thanks for participating, {((UserProfile)stepContext.Values[UserInfo]).Name}."),
+                MessageFactory.Text($"Thanks for using our Services, {((UserProfile)stepContext.Values[UserInfo]).Name}."),
                 cancellationToken);
 
             // Exit the dialog, returning the collected user information.
