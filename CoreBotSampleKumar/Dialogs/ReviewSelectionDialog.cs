@@ -21,7 +21,7 @@ namespace Microsoft.BotBuilderSamples
         private const string OptionsSelected = "value-optionsSelected";
         
         // Define the company choices for the company selection prompt.
-        private readonly string[] _companyOptions = new string[]
+        private readonly string[] _selectionOptions = new string[]
         {
             "Create a New Booking", "Amend an existing Booking", "Cancel a Booking", 
         };
@@ -61,7 +61,7 @@ namespace Microsoft.BotBuilderSamples
             }
 
             // Create the list of options to choose from.
-            var options = _companyOptions.ToList();
+            var options = _selectionOptions.ToList();
             options.Add(DoneOption);
             if (list.Count > 0)
             {
