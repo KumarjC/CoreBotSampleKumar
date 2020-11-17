@@ -57,7 +57,7 @@ namespace Microsoft.BotBuilderSamples
             else
             {
                 message = $"You have selected **{list[0]}**. You can review an additional option as well, " +
-                    $"or choose `{DoneOption}` to finish.";
+                    $"or choose `{DoneOption}` to continue.";
             }
 
             // Create the list of options to choose from.
