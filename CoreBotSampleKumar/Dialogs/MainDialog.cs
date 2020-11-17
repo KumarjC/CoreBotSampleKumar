@@ -76,13 +76,13 @@ namespace CoreBotSampleKumar.Dialogs
         }
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if (!_luisRecognizer.IsConfigured)
-            {
-                await stepContext.Context.SendActivityAsync(
-                    MessageFactory.Text("NOTE: LUIS is not configured. To enable all capabilities, add 'LuisAppId', 'LuisAPIKey' and 'LuisAPIHostName' to the appsettings.json file.", inputHint: InputHints.IgnoringInput), cancellationToken);
+            //if (!_luisRecognizer.IsConfigured)
+            //{
+            //    await stepContext.Context.SendActivityAsync(
+            //        MessageFactory.Text("NOTE: LUIS is not configured. To enable all capabilities, add 'LuisAppId', 'LuisAPIKey' and 'LuisAPIHostName' to the appsettings.json file.", inputHint: InputHints.IgnoringInput), cancellationToken);
 
-                return await stepContext.NextAsync(null, cancellationToken);
-            }
+            //    return await stepContext.NextAsync(null, cancellationToken);
+            //}
 
             // Use the text provided in FinalStepAsync or the default if it is the first time.
             var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\nSay something like \"Book a flight from Paris to Berlin on March 22, 2020\"";

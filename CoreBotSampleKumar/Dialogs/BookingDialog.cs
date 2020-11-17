@@ -24,7 +24,7 @@ namespace CoreBotSampleKumar.Dialogs
         private const string OriginStepMsgText = "Where are you traveling from?";
         private const string CountofPeople = "How many people are travelling?";
         private const string PassengerName = "Please name the Passengers, if multiple, please use comma separated values";
-
+        private const string FLAG = "No";
 
         public BookingDialog()
             : base(nameof(BookingDialog))
@@ -40,6 +40,7 @@ namespace CoreBotSampleKumar.Dialogs
                 TravelDateStepAsync,
                 ConfirmStepAsync,
                 FinalStepAsync,
+                RestartAsync,
             }));
 
             // The initial child Dialog to run.
@@ -121,11 +122,39 @@ namespace CoreBotSampleKumar.Dialogs
             if ((bool)stepContext.Result)
             {
                 var bookingDetails = (BookingDetails)stepContext.Options;
+                var messageText = $"Thank you for using our servicesn.";
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+                return await stepContext.EndDialogAsync(bookingDetails, cancellationToken);
+                               
+            }
+              
+           else
+            {
+                var messageText = $"Sorry, Is this correct Do you need to confirm the selections or restart from the beginning.";
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+                return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+
+            }
+                        
+        }
+
+        private async Task<DialogTurnResult> RestartAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if ((bool)stepContext.Result)
+            {
+                var bookingDetails = (BookingDetails)stepContext.Options;
 
                 return await stepContext.EndDialogAsync(bookingDetails, cancellationToken);
             }
-                       
-            return await stepContext.EndDialogAsync(null, cancellationToken);
+
+            else
+            {
+                var messageText = $"Sorry, I did not get you & have to terminate the session.";
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+
+            }
+
         }
 
 

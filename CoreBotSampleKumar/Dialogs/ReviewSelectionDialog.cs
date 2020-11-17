@@ -52,7 +52,7 @@ namespace Microsoft.BotBuilderSamples
             string message;
             if (list.Count is 0)
             {
-                message = $"Please choose an option to start, or `{DoneOption}` to finish.";
+                message = $"Please choose an option to start, or `{DoneOption}` to continue.";
             }
             else
             {
