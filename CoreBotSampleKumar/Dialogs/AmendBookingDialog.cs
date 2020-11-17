@@ -18,8 +18,7 @@ namespace CoreBotSampleKumar.Dialogs
 
     public class AmendBookingDialog : CancelAndHelpDialog
     {
-        private const string ConfirmationText = "Your Booking has been successfully cancelled.";
-        private const string RequestBookingIDText = "Enter the BookingID you wish to cancel.";
+        private const string RequestBookingIDText = "Enter the BookingID you wish to Amend/Cancel.";
 
         public AmendBookingDialog()
             : base(nameof(AmendBookingDialog))
@@ -31,6 +30,7 @@ namespace CoreBotSampleKumar.Dialogs
             {
                 BookingIDStepAsync,
                 NameStepAsync,
+
             }));
 
             // The initial child Dialog to run.
@@ -39,29 +39,17 @@ namespace CoreBotSampleKumar.Dialogs
 
         private async Task<DialogTurnResult> BookingIDStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var bookingDetails = (BookingDetails)stepContext.Options;
-
-            if (bookingDetails.PassengerName == null)
-            {
                 var promptMessage = MessageFactory.Text(RequestBookingIDText, RequestBookingIDText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
-            }
-
-            return await stepContext.NextAsync(bookingDetails.PassengerName, cancellationToken);
+     
         }
 
         private async Task<DialogTurnResult> NameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var bookingDetails = (BookingDetails)stepContext.Options;
-            bookingDetails.PassengerName = (string)stepContext.Result;
-
-            if (bookingDetails.Destination == null)
-            {
-                var promptMessage = MessageFactory.Text(ConfirmationText, ConfirmationText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
-            }
-
-            return await stepContext.NextAsync(bookingDetails.Destination, cancellationToken);
+            var messageText = $"Your Booking of ID {stepContext.Result} has been successfully Amended/Cancelled";
+            var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            
         }
 
     }

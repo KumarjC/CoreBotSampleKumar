@@ -30,6 +30,7 @@ namespace CoreBotSampleKumar.Dialogs
             : base(nameof(ReviewSelectionDialog))
         {
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
+            AddDialog(new AmendBookingDialog());
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
                 {
@@ -102,7 +103,10 @@ namespace CoreBotSampleKumar.Dialogs
                 // If they chose a company, add it to the list.
                 list.Add(choice.Value);
             }
-
+            if (choice.Value== "Amend an existing Booking")
+            {
+                return await stepContext.ReplaceDialogAsync(nameof(AmendBookingDialog),list, cancellationToken);
+            }
             if (done || list.Count >= 2)
             {
                 // If they're done, exit and return their list.
