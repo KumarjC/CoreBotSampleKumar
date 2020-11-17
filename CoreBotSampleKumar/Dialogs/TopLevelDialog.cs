@@ -84,7 +84,7 @@ namespace Microsoft.BotBuilderSamples
         {
             // Set the user's company selection to what they entered in the review-selection dialog.
             var userProfile = (UserProfile)stepContext.Values[UserInfo];
-            userProfile.CompaniesToReview = stepContext.Result as List<string> ?? new List<string>();
+            userProfile.OptionsToReview = stepContext.Result as List<string> ?? new List<string>();
 
             // Thank them for participating.
             //await stepContext.Context.SendActivityAsync(

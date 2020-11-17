@@ -18,7 +18,7 @@ namespace Microsoft.BotBuilderSamples
         private const string DoneOption = "Done";
 
         // Define value names for values tracked inside the dialogs.
-        private const string CompaniesSelected = "value-companiesSelected";
+        private const string OptionsSelected = "value-optionsSelected";
         
         // Define the company choices for the company selection prompt.
         private readonly string[] _companyOptions = new string[]
@@ -46,7 +46,7 @@ namespace Microsoft.BotBuilderSamples
         {
             // Continue using the same selection list, if any, from the previous iteration of this dialog.
             var list = stepContext.Options as List<string> ?? new List<string>();
-            stepContext.Values[CompaniesSelected] = list;
+            stepContext.Values[OptionsSelected] = list;
 
             // Create a prompt message.
             string message;
@@ -93,7 +93,7 @@ namespace Microsoft.BotBuilderSamples
             CancellationToken cancellationToken)
         {
             // Retrieve their selection list, the choice they made, and whether they chose to finish.
-            var list = stepContext.Values[CompaniesSelected] as List<string>;
+            var list = stepContext.Values[OptionsSelected] as List<string>;
             var choice = (FoundChoice)stepContext.Result;
             var done = choice.Value == DoneOption;
 
