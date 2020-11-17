@@ -78,7 +78,7 @@ namespace CoreBotSampleKumar.Dialogs
 
             // Prompt the user for a choice.
 
-            if(list.Count > 0 && list[0]== "Create a New Booking") 
+            if(list.Count > 0 && list[0]=="Create a New Booking")
             {
                 return await stepContext.EndDialogAsync(list, cancellationToken);
             }
@@ -103,7 +103,7 @@ namespace CoreBotSampleKumar.Dialogs
                 // If they chose a company, add it to the list.
                 list.Add(choice.Value);
             }
-            if (choice.Value== "Amend an existing Booking" || choice.Value == "Cancel")
+            if (choice.Value=="Amend an existing Booking" || choice.Value=="Cancel a Booking")
             {
                 return await stepContext.ReplaceDialogAsync(nameof(AmendBookingDialog),list, cancellationToken);
             }
