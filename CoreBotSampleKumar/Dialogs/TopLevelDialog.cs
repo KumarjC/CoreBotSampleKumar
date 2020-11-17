@@ -41,7 +41,7 @@ namespace CoreBotSampleKumar.Dialogs
             // Create an object in which to collect the user's information within the dialog.
             stepContext.Values[UserInfo] = new UserProfile();
 
-            var promptOptions = new PromptOptions { Prompt = MessageFactory.Text("Please enter your name.") };
+            var promptOptions = new PromptOptions { Prompt = MessageFactory.Text("Please enter your Registered userID.") };
 
             // Ask the user to enter their name.
             return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);

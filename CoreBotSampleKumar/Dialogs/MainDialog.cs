@@ -41,8 +41,8 @@ namespace CoreBotSampleKumar.Dialogs
             AddDialog(bookingDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
-                FirstStepAsync,
                 IntroStepAsync,
+                FirstStepAsync,
                 ActStepAsync,
                 FinalStepAsync,
                // EndStepAsync,

@@ -53,12 +53,12 @@ namespace CoreBotSampleKumar.Dialogs
             string message;
             if (list.Count is 0)
             {
-                message = $"Please choose an option to start, or `{DoneOption}` to continue.";
+                message = $"Please choose an option to start, or `{DoneOption}` to exit.";
             }
             else
             {
                 message = $"You have selected **{list[0]}**. You can review an additional option as well, " +
-                    $"or choose `{DoneOption}` to continue.";
+                    $"or choose `{DoneOption}` to exit.";
             }
 
             // Create the list of options to choose from.
@@ -103,14 +103,17 @@ namespace CoreBotSampleKumar.Dialogs
                 // If they chose a company, add it to the list.
                 list.Add(choice.Value);
             }
-            if (choice.Value== "Amend an existing Booking")
+            if (choice.Value== "Amend an existing Booking" || choice.Value == "Cancel")
             {
                 return await stepContext.ReplaceDialogAsync(nameof(AmendBookingDialog),list, cancellationToken);
             }
             if (done || list.Count >= 2)
             {
                 // If they're done, exit and return their list.
-                return await stepContext.EndDialogAsync(list, cancellationToken);
+                 var messageText = $"You are about to exit the chat. Thank you for using our services.";
+                 var promptMessage = MessageFactory.Text(messageText, messageText);
+                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+         
             }
             else
             {
