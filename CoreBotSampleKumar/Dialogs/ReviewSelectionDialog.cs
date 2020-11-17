@@ -10,7 +10,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 
-namespace Microsoft.BotBuilderSamples
+namespace CoreBotSampleKumar.Dialogs
 {
     public class ReviewSelectionDialog : ComponentDialog
     {

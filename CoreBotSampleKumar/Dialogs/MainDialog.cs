@@ -16,10 +16,8 @@ using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
-
-
 using CoreBotSampleKumar.CognitiveModels;
-using Microsoft.BotBuilderSamples;
+
 
 namespace CoreBotSampleKumar.Dialogs
 {
