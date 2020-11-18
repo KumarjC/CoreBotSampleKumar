@@ -38,6 +38,7 @@ namespace CoreBotSampleKumar.Dialogs
 
             AddDialog(new TopLevelDialog());
             AddDialog(new ReviewSelectionDialog());
+            AddDialog(new ConfirmationDialog());
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(bookingDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
@@ -157,9 +158,9 @@ namespace CoreBotSampleKumar.Dialogs
                 // Now we have all the booking details call the booking service.
                 // If the call to the booking service was successful tell the user.
 
-                //var timeProperty = new TimexProperty(result.TravelDate);
-                //var travelDateMsg = timeProperty.ToNaturalLanguage(DateTime.Now);
-              
+                var timeProperty = new TimexProperty(result.TravelDate);
+                var travelDateMsg = timeProperty.ToNaturalLanguage(DateTime.Now);
+
                 //152346
                 var welcome = CreateAdaptiveCardAttachment("FlightItineraryCard.json");
                 var response1 = MessageFactory.Attachment(welcome, ssml: "Final Confirmation!");
@@ -171,10 +172,12 @@ namespace CoreBotSampleKumar.Dialogs
             }
 
             // Restart the main dialog with a different message the second time around
-         
-            var promptMessage = "What else can I do for you?";
-            //return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
-            return await stepContext.EndDialogAsync (promptMessage, cancellationToken);
+
+            //var promptMessage = "What else can I do for you?";
+            ////return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
+            //return await stepContext.EndDialogAsync (promptMessage, cancellationToken);
+
+            return await stepContext.ReplaceDialogAsync(nameof(ConfirmationDialog), null, cancellationToken);
         }
 
         private Attachment CreateAdaptiveCardAttachment(string cardName)
