@@ -78,7 +78,8 @@ namespace CoreBotSampleKumar.Dialogs
                 return await stepContext.EndDialogAsync(null, cancellationToken);
             }
             else {
-                return await stepContext.BeginDialogAsync(nameof(TopLevelDialog), null, cancellationToken);
+                //return await stepContext.BeginDialogAsync(nameof(TopLevelDialog), null, cancellationToken);
+                return await stepContext.NextAsync(null, cancellationToken);
             }
         }
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
