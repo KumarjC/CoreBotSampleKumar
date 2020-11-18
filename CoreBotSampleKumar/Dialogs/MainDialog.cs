@@ -115,8 +115,8 @@ namespace CoreBotSampleKumar.Dialogs
                     var bookingDetails = new BookingDetails()
                     {
                         // Get destination and origin from the composite entities arrays.
-                        Destination = luisResult.ToEntities.Airport,
-                        Origin = luisResult.FromEntities.Airport,
+                        Destination = luisResult.ToEntities.To,
+                        Origin = luisResult.FromEntities.From,
                         TravelDate = luisResult.TravelDate,
                     };
 
