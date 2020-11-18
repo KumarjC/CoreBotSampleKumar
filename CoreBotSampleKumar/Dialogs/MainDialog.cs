@@ -26,6 +26,7 @@ namespace CoreBotSampleKumar.Dialogs
         private readonly FlightBookingRecognizer _luisRecognizer;
         protected readonly ILogger Logger;
         private readonly UserState _userState;
+        public string CancelFlag = "Cancel";
 
         // Dependency injection uses this constructor to instantiate MainDialog
         public MainDialog(UserState userState,FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, ILogger<MainDialog> logger)
@@ -70,7 +71,15 @@ namespace CoreBotSampleKumar.Dialogs
         //}
         private async Task<DialogTurnResult> FirstStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            return await stepContext.BeginDialogAsync(nameof(TopLevelDialog), null, cancellationToken);
+            if (String.Equals(stepContext.Result.ToString(), CancelFlag,
+                   StringComparison.OrdinalIgnoreCase))
+            {
+
+                return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
+            else {
+                return await stepContext.BeginDialogAsync(nameof(TopLevelDialog), null, cancellationToken);
+            }
         }
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {

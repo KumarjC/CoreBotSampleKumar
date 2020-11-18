@@ -65,13 +65,14 @@ namespace CoreBotSampleKumar.Dialogs
             var userProfile = (UserProfile)stepContext.Values[UserInfo];
             userProfile.Age = (int)stepContext.Result;
 
-            if (userProfile.Age < 18)
+            if (userProfile.Age < 10)
             {
                 // If they are too young, skip the review selection dialog, and pass an empty list to the next step.
                 await stepContext.Context.SendActivityAsync(
-                    MessageFactory.Text("You must be holding Passport or any equivalent National Identity to Book Tickets if you are below 18."),
+                    MessageFactory.Text("You must be more than 10 years old to Book tickets accompanied? I am afraid I have to cancel the session."),
                     cancellationToken);
-                return await stepContext.NextAsync(new List<string>(), cancellationToken);
+                //return await stepContext.NextAsync(new List<string>(), cancellationToken);
+                  return await stepContext.EndDialogAsync(null, cancellationToken);
             }
             else
             {
