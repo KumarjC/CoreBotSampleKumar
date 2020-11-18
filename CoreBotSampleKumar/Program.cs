@@ -24,6 +24,7 @@ namespace CoreBotSampleKumar
                     {
                         logging.AddDebug();
                         logging.AddConsole();
+                        logging.AddApplicationInsights();
                     });
                     webBuilder.UseStartup<Startup>();
                 });
