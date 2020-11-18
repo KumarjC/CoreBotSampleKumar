@@ -107,6 +107,11 @@ namespace CoreBotSampleKumar.Dialogs
             //{
             //    return await stepContext.ReplaceDialogAsync(nameof(AmendBookingDialog),list, cancellationToken);
             //}
+
+            if(choice.Value== "Create a New Booking")
+            {
+                return await stepContext.ReplaceDialogAsync(nameof(BookingDialog), new BookingDetails(), cancellationToken);
+            }
             if (done || list.Count >= 2)
             {
                 // If they're done, exit and return their list.

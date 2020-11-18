@@ -46,7 +46,7 @@ namespace CoreBotSampleKumar.Dialogs
                 FirstStepAsync,
                 ActStepAsync,
                 FinalStepAsync,
-               // EndStepAsync,
+                //EndStepAsync,
 
             }));
 
@@ -54,21 +54,21 @@ namespace CoreBotSampleKumar.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-        //private async Task<DialogTurnResult> EndStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        //{
-        //    var userInfo = (UserProfile)stepContext.Result;
+        private async Task<DialogTurnResult> EndStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            var userInfo = (UserProfile)stepContext.Result;
 
-        //    string status = "You are signed up to review "
-        //        + (userInfo.CompaniesToReview.Count is 0 ? "no companies" : string.Join(" and ", userInfo.CompaniesToReview))
-        //        + ".";
+            string status = "You are signed up to review "
+                + (userInfo.OptionsToReview.Count is 0 ? "no options" : string.Join(" and ", userInfo.OptionsToReview))
+                + ".";
 
-        //    await stepContext.Context.SendActivityAsync(status);
+            await stepContext.Context.SendActivityAsync(status);
 
-        //    var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
-        //    await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);
+            var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
+            await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);
 
-        //    return await stepContext.EndDialogAsync(null, cancellationToken);
-        //}
+            return await stepContext.EndDialogAsync(null, cancellationToken);
+        }
         private async Task<DialogTurnResult> FirstStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             if (String.Equals(stepContext.Result.ToString(), CancelFlag,
@@ -99,46 +99,47 @@ namespace CoreBotSampleKumar.Dialogs
 
         private async Task<DialogTurnResult> ActStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if (!_luisRecognizer.IsConfigured)
-            {
-                // LUIS is not configured, we just run the BookingDialog path with an empty BookingDetailsInstance.
-                return await stepContext.BeginDialogAsync(nameof(BookingDialog), new BookingDetails(), cancellationToken);
-            }
+            //if (!_luisRecognizer.IsConfigured)
+            //{
+            //    // LUIS is not configured, we just run the BookingDialog path with an empty BookingDetailsInstance.
+            //    return await stepContext.BeginDialogAsync(nameof(BookingDialog), new BookingDetails(), cancellationToken);
+            //}
 
-            // Call LUIS and gather any potential booking details. (Note the TurnContext has the response to the prompt.)
-            var luisResult = await _luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
-            switch (luisResult.TopIntent().intent)
-            {
-                case FlightBooking.Intent.BookFlight:
+            //// Call LUIS and gather any potential booking details. (Note the TurnContext has the response to the prompt.)
+            //var luisResult = await _luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+            //switch (luisResult.TopIntent().intent)
+            //{
+            //    case FlightBooking.Intent.BookFlight:
                     
-                    // Initialize BookingDetails with any entities we may have found in the response.
-                    var bookingDetails = new BookingDetails()
-                    {
-                        // Get destination and origin from the composite entities arrays.
-                        Destination = luisResult.ToEntities.Airport,
-                        Origin = luisResult.FromEntities.Airport,
-                        TravelDate = luisResult.TravelDate,
-                    };
+            //        // Initialize BookingDetails with any entities we may have found in the response.
+            //        var bookingDetails = new BookingDetails()
+            //        {
+            //            // Get destination and origin from the composite entities arrays.
+            //            Destination = luisResult.ToEntities.Airport,
+            //            Origin = luisResult.FromEntities.Airport,
+            //            TravelDate = luisResult.TravelDate,
+            //        };
 
-                    // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
-                    return await stepContext.BeginDialogAsync(nameof(BookingDialog), bookingDetails, cancellationToken);
+            //        // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
+            //        return await stepContext.BeginDialogAsync(nameof(BookingDialog), bookingDetails, cancellationToken);
 
-                case FlightBooking.Intent.GetWeather:
-                    // We haven't implemented the GetWeatherDialog so we just display a TODO message.
-                    var getWeatherMessageText = "TODO: get weather flow here";
-                    var getWeatherMessage = MessageFactory.Text(getWeatherMessageText, getWeatherMessageText, InputHints.IgnoringInput);
-                    await stepContext.Context.SendActivityAsync(getWeatherMessage, cancellationToken);
-                    break;
+            //    case FlightBooking.Intent.GetWeather:
+            //        // We haven't implemented the GetWeatherDialog so we just display a TODO message.
+            //        var getWeatherMessageText = "TODO: get weather flow here";
+            //        var getWeatherMessage = MessageFactory.Text(getWeatherMessageText, getWeatherMessageText, InputHints.IgnoringInput);
+            //        await stepContext.Context.SendActivityAsync(getWeatherMessage, cancellationToken);
+            //        break;
 
-                default:
-                    // Catch all for unhandled intents
-                    var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {luisResult.TopIntent().intent})";
-                    var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-                    await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
-                    break;
-            }
+            //    default:
+            //        // Catch all for unhandled intents
+            //        var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {luisResult.TopIntent().intent})";
+            //        var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
+            //        await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
+            //        break;
+            //}
 
-            return await stepContext.NextAsync(null, cancellationToken);
+            // return await stepContext.NextAsync(null, cancellationToken);
+            return await stepContext.NextAsync(new BookingDetails(), cancellationToken);
         }
 
 
@@ -151,8 +152,8 @@ namespace CoreBotSampleKumar.Dialogs
                 // Now we have all the booking details call the booking service.
                 // If the call to the booking service was successful tell the user.
 
-                var timeProperty = new TimexProperty(result.TravelDate);
-                var travelDateMsg = timeProperty.ToNaturalLanguage(DateTime.Now);
+                //var timeProperty = new TimexProperty(result.TravelDate);
+                //var travelDateMsg = timeProperty.ToNaturalLanguage(DateTime.Now);
               
                 //152346
                 var welcome = CreateAdaptiveCardAttachment("FlightItineraryCard.json");
