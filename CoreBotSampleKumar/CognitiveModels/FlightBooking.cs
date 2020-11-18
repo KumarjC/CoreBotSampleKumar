@@ -19,7 +19,7 @@ namespace CoreBotSampleKumar.CognitiveModels
         {
             BookFlight,
             Cancel,
-            GetWeather,
+            AmendBooking,
             None
         };
         public Dictionary<Intent, IntentScore> Intents;
@@ -41,6 +41,7 @@ namespace CoreBotSampleKumar.CognitiveModels
             public class FromClass
             {
                 public string[][] Airport;
+                public string[][] GeographyV22;
                 [JsonProperty("$instance")]
                 public _InstanceFrom _instance;
             }
@@ -53,6 +54,7 @@ namespace CoreBotSampleKumar.CognitiveModels
             public class ToClass
             {
                 public string[][] Airport;
+                public string[][] GeographyV22;
                 [JsonProperty("$instance")]
                 public _InstanceTo _instance;
             }
@@ -65,11 +67,68 @@ namespace CoreBotSampleKumar.CognitiveModels
                 public InstanceData[] Airport;
                 public InstanceData[] From;
                 public InstanceData[] To;
+
+                [JsonProperty("geographyV2")]
+                public List<GeographyV22> GeographyV22 { get; set; }
+                public List<GeographyV2> GeographyV2 { get; set; }
             }
             [JsonProperty("$instance")]
             public _Instance _instance;
         }
+
+
         public _Entities Entities;
+        public Root Roots;
+        public GeographyV2 geographyV2s;
+        public GeographyV22 GeographyV22s;
+
+        // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+        public class GeographyV2
+        {
+            [JsonProperty("location")]
+            public string Location { get; set; }
+
+            [JsonProperty("type")]
+            public string Type { get; set; }
+        }
+
+        public class GeographyV22
+        {
+            [JsonProperty("type")]
+            public string Type { get; set; }
+
+            [JsonProperty("text")]
+            public string Text { get; set; }
+
+            [JsonProperty("startIndex")]
+            public int StartIndex { get; set; }
+
+            [JsonProperty("endIndex")]
+            public int EndIndex { get; set; }
+
+            [JsonProperty("modelType")]
+            public string ModelType { get; set; }
+
+            [JsonProperty("recognitionSources")]
+            public List<string> RecognitionSources { get; set; }
+        }
+
+        public class Instance
+        {
+            [JsonProperty("geographyV2")]
+            public List<GeographyV22> GeographyV2 { get; set; }
+        }
+
+        public class Root
+        {
+            [JsonProperty("geographyV2")]
+            public List<GeographyV2> GeographyV2 { get; set; }
+
+            [JsonProperty("$instance")]
+            public Instance Instance { get; set; }
+        }
+
+
 
         [JsonExtensionData(ReadData = true, WriteData = true)]
         public IDictionary<string, object> Properties { get; set; }
@@ -82,6 +141,7 @@ namespace CoreBotSampleKumar.CognitiveModels
             Intents = app.Intents;
             Entities = app.Entities;
             Properties = app.Properties;
+
         }
 
         public (Intent intent, double score) TopIntent()

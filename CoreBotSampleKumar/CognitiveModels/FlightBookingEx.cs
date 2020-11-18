@@ -12,8 +12,8 @@ namespace CoreBotSampleKumar.CognitiveModels
         {
             get
             {
-                var fromValue = Entities?._instance?.From?.FirstOrDefault()?.Text;
-                var fromAirportValue = Entities?.From?.FirstOrDefault()?.Airport?.FirstOrDefault()?.FirstOrDefault();
+                var fromValue = Entities?._instance?.GeographyV22?.FirstOrDefault()?.Text;
+                var fromAirportValue = Entities?.From?.FirstOrDefault()?.GeographyV22?.FirstOrDefault()?.FirstOrDefault();
                 return (fromValue, fromAirportValue);
             }
         }
@@ -22,8 +22,8 @@ namespace CoreBotSampleKumar.CognitiveModels
         {
             get
             {
-                var toValue = Entities?._instance?.To?.FirstOrDefault()?.Text;
-                var toAirportValue = Entities?.To?.FirstOrDefault()?.Airport?.FirstOrDefault()?.FirstOrDefault();
+                var toValue = Entities?._instance?.GeographyV22?.LastOrDefault()?.Text;
+                var toAirportValue = Entities?.To?.FirstOrDefault()?.GeographyV22?.LastOrDefault()?.FirstOrDefault();
                 return (toValue, toAirportValue);
             }
         }
