@@ -30,7 +30,7 @@ namespace CoreBotSampleKumar.Dialogs
         public string CancelFlag = "Cancel";
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(UserState userState,FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, ILogger<MainDialog> logger)
+        public MainDialog(UserState userState, FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, ILogger<MainDialog> logger)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
@@ -79,7 +79,8 @@ namespace CoreBotSampleKumar.Dialogs
 
                 return await stepContext.EndDialogAsync(null, cancellationToken);
             }
-            else {
+            else
+            {
                 //return await stepContext.BeginDialogAsync(nameof(TopLevelDialog), null, cancellationToken);
                 return await stepContext.NextAsync(null, cancellationToken);
             }
@@ -134,7 +135,7 @@ namespace CoreBotSampleKumar.Dialogs
                     break;
                 case FlightBooking.Intent.Cancel:
                     // We haven't implemented the GetWeatherDialog so we just display a TODO message.
-                   
+
                     break;
 
                 default:
@@ -163,12 +164,12 @@ namespace CoreBotSampleKumar.Dialogs
                 var travelDateMsg = timeProperty.ToNaturalLanguage(DateTime.Now);
 
                 //152346
-                var welcome = CreateAdaptiveCardAttachment("FlightItineraryCard.json",result);
+                var welcome = CreateAdaptiveCardAttachment("FlightItineraryCard.json", result);
                 var response1 = MessageFactory.Attachment(welcome, ssml: "Final Confirmation!");
                 //end
 
-               // var messageText = $"I have you booked to {result.Destination} from {result.Origin} on {travelDateMsg}";
-               // var message = MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput);
+                // var messageText = $"I have you booked to {result.Destination} from {result.Origin} on {travelDateMsg}";
+                // var message = MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput);
                 await stepContext.Context.SendActivityAsync(response1, cancellationToken);
             }
 
@@ -199,25 +200,37 @@ namespace CoreBotSampleKumar.Dialogs
         //    }
         //}
 
-        private Attachment CreateAdaptiveCardAttachment(string cardName,BookingDetails booking)
+        private Attachment CreateAdaptiveCardAttachment(string cardName, BookingDetails booking)
         {
             AdaptiveCard card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 0));
-            var messageText = $"I have {booking.PassengerName} booked to {booking.Destination} from {booking.Origin} on {booking.TravelDate}";
-            card.Speak = messageText;
+            string[] Passengers = booking.PassengerName.Split(",");
+
+            var messageText = $"I have {booking.PassengerName} ";
+            var messageBody = $"booked to {booking.Destination} from {booking.Origin} on {booking.TravelDate}.";
+            card.Speak = String.Concat(messageText, messageBody);
             card.Body.Add(new AdaptiveTextBlock()
             {
-                Text = "Hello Sir",
-                Type="TextBlock",
-                Weight= AdaptiveTextWeight.Bolder,
-                IsSubtle=false,
+                Text = "Hello, I have",
+                Type = "TextBlock",
+                Weight = AdaptiveTextWeight.Bolder,
+                IsSubtle = false,
                 Size = AdaptiveTextSize.Default
             });
+            for (int i = 0; i < Passengers.Length; i++)
+            {
+                string res = Passengers[i];
+                card.Body.Add(new AdaptiveTextBlock()
+                {
+                    Text = res,
+                    Size = AdaptiveTextSize.Default
+                });
+            }
+
             card.Body.Add(new AdaptiveTextBlock()
             {
-                Text = messageText,
+                Text = messageBody,
                 Size = AdaptiveTextSize.Default
             });
-           
             card.Body.Add(new AdaptiveImage()
             {
                 Url = new Uri("https://adaptivecards.io/content/airplane.png")
