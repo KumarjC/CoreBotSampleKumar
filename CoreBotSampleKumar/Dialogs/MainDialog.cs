@@ -17,6 +17,7 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using CoreBotSampleKumar.CognitiveModels;
+using AdaptiveCards;
 
 
 namespace CoreBotSampleKumar.Dialogs
@@ -162,7 +163,7 @@ namespace CoreBotSampleKumar.Dialogs
                 var travelDateMsg = timeProperty.ToNaturalLanguage(DateTime.Now);
 
                 //152346
-                var welcome = CreateAdaptiveCardAttachment("FlightItineraryCard.json");
+                var welcome = CreateAdaptiveCardAttachment("FlightItineraryCard.json",result);
                 var response1 = MessageFactory.Attachment(welcome, ssml: "Final Confirmation!");
                 //end
 
@@ -180,22 +181,48 @@ namespace CoreBotSampleKumar.Dialogs
             return await stepContext.ReplaceDialogAsync(nameof(ConfirmationDialog), null, cancellationToken);
         }
 
-        private Attachment CreateAdaptiveCardAttachment(string cardName)
-        {
-            var cardResourcePath = GetType().Assembly.GetManifestResourceNames().First(name => name.EndsWith(cardName));
+        //private Attachment CreateAdaptiveCardAttachment(string cardName)
+        //{
+        //    var cardResourcePath = GetType().Assembly.GetManifestResourceNames().First(name => name.EndsWith(cardName));
 
-            using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
+        //    using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
+        //    {
+        //        using (var reader = new StreamReader(stream))
+        //        {
+        //            var adaptiveCard = reader.ReadToEnd();
+        //            return new Attachment()
+        //            {
+        //                ContentType = "application/vnd.microsoft.card.adaptive",
+        //                Content = JsonConvert.DeserializeObject(adaptiveCard),
+        //            };
+        //        }
+        //    }
+        //}
+
+        private Attachment CreateAdaptiveCardAttachment(string cardName,BookingDetails booking)
+        {
+            AdaptiveCard card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 0));
+            var messageText = $"I have {booking.PassengerName} booked to {booking.Destination} from {booking.Origin} on {booking.TravelDate}";
+            card.Body.Add(new AdaptiveTextBlock()
             {
-                using (var reader = new StreamReader(stream))
-                {
-                    var adaptiveCard = reader.ReadToEnd();
-                    return new Attachment()
-                    {
-                        ContentType = "application/vnd.microsoft.card.adaptive",
-                        Content = JsonConvert.DeserializeObject(adaptiveCard),
-                    };
-                }
-            }
+                Text = messageText,
+                Size = AdaptiveTextSize.Default
+            });
+
+            card.Body.Add(new AdaptiveImage()
+            {
+                Url = new Uri("https://adaptivecards.io/content/airplane.png")
+            });
+
+            // serialize the card to JSON
+            string json = card.ToJson();
+
+            return new Attachment()
+            {
+                ContentType = "application/vnd.microsoft.card.adaptive",
+                Content = JsonConvert.DeserializeObject(json),
+            };
+
         }
 
     }
