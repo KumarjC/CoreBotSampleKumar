@@ -203,12 +203,21 @@ namespace CoreBotSampleKumar.Dialogs
         {
             AdaptiveCard card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 0));
             var messageText = $"I have {booking.PassengerName} booked to {booking.Destination} from {booking.Origin} on {booking.TravelDate}";
+            card.Speak = messageText;
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = "Hello Sir",
+                Type="TextBlock",
+                Weight= AdaptiveTextWeight.Bolder,
+                IsSubtle=false,
+                Size = AdaptiveTextSize.Default
+            });
             card.Body.Add(new AdaptiveTextBlock()
             {
                 Text = messageText,
                 Size = AdaptiveTextSize.Default
             });
-
+           
             card.Body.Add(new AdaptiveImage()
             {
                 Url = new Uri("https://adaptivecards.io/content/airplane.png")
