@@ -48,29 +48,26 @@ namespace CoreBotSampleKumar.Dialogs
                 FirstStepAsync,
                 ActStepAsync,
                 FinalStepAsync,
-                //EndStepAsync,
-
             }));
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
         }
-
-        private async Task<DialogTurnResult> EndStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var userInfo = (UserProfile)stepContext.Result;
+            if (!_luisRecognizer.IsConfigured)
+            {
+                await stepContext.Context.SendActivityAsync(
+                    MessageFactory.Text("NOTE: LUIS is not configured. To enable all capabilities, add 'LuisAppId', 'LuisAPIKey' and 'LuisAPIHostName' to the appsettings.json file.", inputHint: InputHints.IgnoringInput), cancellationToken);
+                return await stepContext.NextAsync(null, cancellationToken);
+            }
 
-            string status = "You are signed up to review "
-                + (userInfo.OptionsToReview.Count is 0 ? "no options" : string.Join(" and ", userInfo.OptionsToReview))
-                + ".";
-
-            await stepContext.Context.SendActivityAsync(status);
-
-            var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
-            await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);
-
-            return await stepContext.EndDialogAsync(null, cancellationToken);
+            // Use the text provided in FinalStepAsync or the default if it is the first time.
+            var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\nSay something like \"Book a flight from Paris to Berlin on March 22, 2020\"";
+            var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
         }
+
         private async Task<DialogTurnResult> FirstStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             if (String.Equals(stepContext.Result.ToString(), CancelFlag,
@@ -84,21 +81,6 @@ namespace CoreBotSampleKumar.Dialogs
                 //return await stepContext.BeginDialogAsync(nameof(TopLevelDialog), null, cancellationToken);
                 return await stepContext.NextAsync(null, cancellationToken);
             }
-        }
-        private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            if (!_luisRecognizer.IsConfigured)
-            {
-                await stepContext.Context.SendActivityAsync(
-                    MessageFactory.Text("NOTE: LUIS is not configured. To enable all capabilities, add 'LuisAppId', 'LuisAPIKey' and 'LuisAPIHostName' to the appsettings.json file.", inputHint: InputHints.IgnoringInput), cancellationToken);
-
-                return await stepContext.NextAsync(null, cancellationToken);
-            }
-
-            // Use the text provided in FinalStepAsync or the default if it is the first time.
-            var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\nSay something like \"Book a flight from Paris to Berlin on March 22, 2020\"";
-            var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ActStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -128,16 +110,17 @@ namespace CoreBotSampleKumar.Dialogs
                     return await stepContext.BeginDialogAsync(nameof(BookingDialog), bookingDetails, cancellationToken);
 
                 case FlightBooking.Intent.AmendBooking:
-                    // We haven't implemented the GetWeatherDialog so we just display a TODO message.
-                    var getWeatherMessageText = "Cancel the Booking";
-                    var getWeatherMessage = MessageFactory.Text(getWeatherMessageText, getWeatherMessageText, InputHints.IgnoringInput);
-                    await stepContext.Context.SendActivityAsync(getWeatherMessage, cancellationToken);
+                    // We haven't implemented the GetAmendBookingDialog so we just display a TODO message.
+                    var getAmendMessageText = "Amend the Booking";
+                    var getAmendMessage = MessageFactory.Text(getAmendMessageText, getAmendMessageText, InputHints.IgnoringInput);
+                    await stepContext.Context.SendActivityAsync(getAmendMessage, cancellationToken);
                     break;
                 case FlightBooking.Intent.Cancel:
                     // We haven't implemented the GetWeatherDialog so we just display a TODO message.
-
+                    var getCancelMessageText = "Cancel the Booking";
+                    var getCancelMessage = MessageFactory.Text(getCancelMessageText, getCancelMessageText, InputHints.IgnoringInput);
+                    await stepContext.Context.SendActivityAsync(getCancelMessage, cancellationToken);
                     break;
-
                 default:
                     // Catch all for unhandled intents
                     var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {luisResult.TopIntent().intent})";
@@ -145,11 +128,9 @@ namespace CoreBotSampleKumar.Dialogs
                     await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
                     break;
             }
-
             // return await stepContext.NextAsync(null, cancellationToken);
             return await stepContext.NextAsync(new BookingDetails(), cancellationToken);
         }
-
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
@@ -166,39 +147,30 @@ namespace CoreBotSampleKumar.Dialogs
                 //152346
                 var welcome = CreateAdaptiveCardAttachment("FlightItineraryCard.json", result);
                 var response1 = MessageFactory.Attachment(welcome, ssml: "Final Confirmation!");
-                //end
 
-                // var messageText = $"I have you booked to {result.Destination} from {result.Origin} on {travelDateMsg}";
-                // var message = MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput);
                 await stepContext.Context.SendActivityAsync(response1, cancellationToken);
             }
 
-            // Restart the main dialog with a different message the second time around
-
-            //var promptMessage = "What else can I do for you?";
-            ////return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
-            //return await stepContext.EndDialogAsync (promptMessage, cancellationToken);
 
             return await stepContext.ReplaceDialogAsync(nameof(ConfirmationDialog), null, cancellationToken);
         }
 
-        //private Attachment CreateAdaptiveCardAttachment(string cardName)
-        //{
-        //    var cardResourcePath = GetType().Assembly.GetManifestResourceNames().First(name => name.EndsWith(cardName));
+        private async Task<DialogTurnResult> EndStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            var userInfo = (UserProfile)stepContext.Result;
 
-        //    using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
-        //    {
-        //        using (var reader = new StreamReader(stream))
-        //        {
-        //            var adaptiveCard = reader.ReadToEnd();
-        //            return new Attachment()
-        //            {
-        //                ContentType = "application/vnd.microsoft.card.adaptive",
-        //                Content = JsonConvert.DeserializeObject(adaptiveCard),
-        //            };
-        //        }
-        //    }
-        //}
+            string status = "You are signed up to review "
+                + (userInfo.OptionsToReview.Count is 0 ? "no options" : string.Join(" and ", userInfo.OptionsToReview))
+                + ".";
+
+            await stepContext.Context.SendActivityAsync(status);
+
+            var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
+            await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);
+
+            return await stepContext.EndDialogAsync(null, cancellationToken);
+        }
+
 
         private Attachment CreateAdaptiveCardAttachment(string cardName, BookingDetails booking)
         {
